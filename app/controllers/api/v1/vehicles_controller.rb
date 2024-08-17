@@ -3,15 +3,18 @@ class Api::V1::VehiclesController < ApplicationController
 
   def index
     @vehicles = if params[:q]
-      Vehicle.search(params[:q])
+      Vehicle.with_recent_location.search(params[:q])
     else
-      Vehicle.all
+    Vehicle.with_recent_location
     end
+
+    serialization = ActiveModelSerializers::SerializableResource.new(@vehicles)   
+
     render json: {
       meta: {
         total: Vehicle.count
       },
-      vehicles: @vehicles.as_json(include: [:recent_location])
+      vehicles: serialization
     }
   end
 
