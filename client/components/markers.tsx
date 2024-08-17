@@ -22,7 +22,11 @@ export const Markers: React.FC<IMarkers> = (props) => {
   } = props
 
   useEffect(() => {
-    if (flyTo === undefined) return
+    const currentCenter = map.getCenter()
+    if (flyTo === undefined) {
+      map.flyTo(currentCenter, DEFAULT_MAP_ZOOM)
+      return
+    }
 
     if (flyTo.lat && flyTo.lng) {
       map.flyTo(flyTo as LatLngLiteral, DEFAULT_MAP_ZOOM + 2)
@@ -30,7 +34,6 @@ export const Markers: React.FC<IMarkers> = (props) => {
     }
 
 
-    const currentCenter = map.getCenter()
     map.flyTo(currentCenter, DEFAULT_MAP_ZOOM)
     onNotFound()
   }, [flyTo])
