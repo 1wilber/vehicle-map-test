@@ -1,0 +1,2 @@
+export const DEFAULT_MAP_CENTER = { lat: -33.48802118425297, lng: -70.65037975640185 }
+export const DEFAULT_MAP_ZOOM = 15

@@ -137,4 +137,22 @@ vehicles = [
   }
 ]
 
+location_tracks = [
+  {
+    vehicle_id: 1,
+    sent_at: Time.zone.now,
+    latitude:-33.48565500061483,
+    longitude:-70.65080641984261,
+  },
+
+  {
+    vehicle_id: 2,
+    sent_at: Time.zone.now,
+    latitude:-33.489635199264065,
+    longitude:-70.6518817687068,
+  }
+]
+
 vehicles.each {|vehicle| Vehicle.create!(vehicle)}
+
+location_tracks.each { |location_track| LocationTrack.create!(location_track)  }

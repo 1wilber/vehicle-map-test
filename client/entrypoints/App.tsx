@@ -1,5 +1,5 @@
-import { createBrowserRouter, LoaderFunctionArgs, Navigate, Outlet, RouteObject, RouterProvider } from "react-router-dom"
-import { VehicleListView, VehicleShowView } from "../views/vehicles"
+import { createBrowserRouter, Navigate, Outlet, RouteObject, RouterProvider } from "react-router-dom"
+import { VehicleListView } from "../views/vehicles"
 
 const Layout = () => {
   return (
@@ -10,12 +10,6 @@ const Layout = () => {
 const VehicleListLoader = () => {
   return fetch('/api/v1/vehicles')
 }
-
-const VehicleShowLoader = (request: LoaderFunctionArgs) => {
-  const vehicleId = request.params.id
-  return fetch(`/api/v1/vehicles/${vehicleId}`)
-}
-
 
 const routes: RouteObject[] = [
   {
@@ -29,13 +23,6 @@ const routes: RouteObject[] = [
         path: '/vehicles',
         element: <VehicleListView />,
         loader: VehicleListLoader,
-        children: [
-          {
-            path: ':id',
-            element: <VehicleShowView />,
-            loader: VehicleShowLoader
-          }
-        ]
       },
     ]
   }
