@@ -1,3 +1,7 @@
+export type Position = {
+  lat: number | undefined;
+  lng: number | undefined
+}
 
 export type LocationTrack = {
   id: number;

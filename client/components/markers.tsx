@@ -2,32 +2,39 @@
 import { useMap } from 'react-leaflet'
 import { MarkerLayer, Marker } from "react-leaflet-marker";
 import DirectionsCarIcon from '@mui/icons-material/DirectionsCar';
-import { LatLngLiteral } from 'leaflet';
 import { useEffect } from 'react';
 import { DEFAULT_MAP_ZOOM } from '../constants';
+import { Position } from '../types';
+import { LatLngLiteral } from 'leaflet';
 
 interface IMarkers {
-  positions: LatLngLiteral[],
-  flyTo: LatLngLiteral | undefined
+  positions: Position[],
+  flyTo: Position | undefined,
+  onNotFound: () => void
 }
 
 export const Markers: React.FC<IMarkers> = (props) => {
   const map = useMap()
   const {
     positions,
-    flyTo
+    flyTo,
+    onNotFound
   } = props
 
   useEffect(() => {
-    console.log({ flyTo })
-    if (!(flyTo?.lat && flyTo?.lng)) {
-      const currentCenter = map.getCenter()
-      map.flyTo(currentCenter, DEFAULT_MAP_ZOOM)
+    if (flyTo === undefined) return
+
+    if (flyTo.lat && flyTo.lng) {
+      map.flyTo(flyTo as LatLngLiteral, DEFAULT_MAP_ZOOM + 2)
       return
     }
 
-    map.flyTo(flyTo, DEFAULT_MAP_ZOOM + 2)
+
+    const currentCenter = map.getCenter()
+    map.flyTo(currentCenter, DEFAULT_MAP_ZOOM)
+    onNotFound()
   }, [flyTo])
+
 
   return (
     <>

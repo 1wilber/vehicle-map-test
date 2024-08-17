@@ -1,20 +1,30 @@
-import { Autocomplete, Avatar, Box, Chip, Divider, Drawer, InputAdornment, List, ListItemAvatar, ListItemButton, ListItemText, ListSubheader, TextField, Typography } from "@mui/material"
+import { Alert, Autocomplete, Avatar, Box, Chip, Divider, Drawer, InputAdornment, List, ListItemAvatar, ListItemButton, ListItemText, ListSubheader, Snackbar, TextField, Typography } from "@mui/material"
 import { useLoaderData, useNavigate, } from "react-router-dom";
-import { Vehicle, VehicleListApiResponse } from "../../types";
+import { Position, Vehicle, VehicleListApiResponse } from "../../types";
 import DirectionsCarIcon from '@mui/icons-material/DirectionsCar';
 import { Search } from "@mui/icons-material";
 import { useState } from "react";
 import { MapContainer, TileLayer } from "react-leaflet";
 import { DEFAULT_MAP_CENTER, DEFAULT_MAP_ZOOM } from "../../constants";
 import { Markers } from "../../components/markers";
-import { LatLngLiteral } from "leaflet";
 
 
 export const VehicleListView = () => {
+  const initialSelectedVehicle: Vehicle = {
+    id: 0,
+    model: "",
+    brand: "",
+    patent: "",
+    year: "",
+    created_at: "",
+    updated_at: "",
+    recent_location: undefined
+  }
   const { vehicles, meta } = useLoaderData() as VehicleListApiResponse
   const navigate = useNavigate()
   const [options, setOptions] = useState([])
-  const [selectedVehicle, setSelectedVehicle] = useState<Vehicle>({})
+  const [selectedVehicle, setSelectedVehicle] = useState<Vehicle>(initialSelectedVehicle)
+  const [open, setOpen] = useState<boolean>(false)
 
 
 
@@ -35,27 +45,29 @@ export const VehicleListView = () => {
 
   const handleSelectedVehicle = (vehicle: Vehicle) => {
     if (selectedVehicle.id === vehicle.id) {
-      setSelectedVehicle({})
+      setSelectedVehicle(initialSelectedVehicle)
     } else {
       setSelectedVehicle(vehicle)
     }
   }
 
-  const getVehiclePosition: LatLngLiteral | undefined = (vehicle: Vehicle) => {
-    if (!vehicle.recent_location?.longitude) return
-    if (!vehicle.recent_location?.latitude) return
-
+  const getVehiclePosition = (vehicle: Vehicle): Position => {
     return {
       lat: vehicle.recent_location?.latitude,
       lng: vehicle.recent_location?.longitude,
     }
   }
 
-  const getVehiclePositions: LatLngLiteral[] | [] = (vehicles: Vehicle[]) => {
+  const getVehiclePositions = (vehicles: Vehicle[]): Position[] => {
     const vehiclesWithRecentLocation = vehicles.filter(vehicle => Object.keys(vehicle?.recent_location || {}).length)
     if (!vehiclesWithRecentLocation.length) return []
 
     return vehiclesWithRecentLocation.map(vehicle => getVehiclePosition(vehicle))
+  }
+
+  const onNotFound = () => {
+    setSelectedVehicle(initialSelectedVehicle)
+    setOpen(true)
   }
 
   return (
@@ -104,7 +116,7 @@ export const VehicleListView = () => {
           >
             {vehicles.map(vehicle => (
               <>
-                <ListItemButton selected={selectedVehicle.id === vehicle.id} onClick={() => handleSelectedVehicle(vehicle)}>
+                <ListItemButton selected={selectedVehicle?.id === vehicle.id} onClick={() => handleSelectedVehicle(vehicle)}>
                   <ListItemAvatar>
                     <Avatar>
                       <DirectionsCarIcon />
@@ -128,6 +140,21 @@ export const VehicleListView = () => {
 
 
       <Box sx={{ flexGrow: 1, width: { sm: `calc(100% - ${drawerWidth}px)` }, height: "100vh" }}>
+
+        <Snackbar
+          open={open}
+          autoHideDuration={4000}
+          anchorOrigin={{ vertical: "top", horizontal: "center" }}
+          onClose={() => setOpen(false)}
+        >
+          <Alert
+            severity="warning"
+            variant="filled"
+            sx={{ width: '100%' }}
+          >
+            No hay ubicacion reciente para el vehiculo seleccionado
+          </Alert>
+        </Snackbar>
         <MapContainer
           style={{ height: '100%', width: "100%" }}
           zoom={DEFAULT_MAP_ZOOM}
@@ -138,8 +165,9 @@ export const VehicleListView = () => {
           />
           <Markers
             positions={getVehiclePositions(vehicles)}
-            flyTo={getVehiclePosition(selectedVehicle)} 
-	  />
+            flyTo={selectedVehicle.id ? getVehiclePosition(selectedVehicle) : undefined}
+            onNotFound={onNotFound}
+          />
         </MapContainer>
       </Box>
     </Box>
