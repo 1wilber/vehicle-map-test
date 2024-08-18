@@ -4,7 +4,7 @@ import { MarkerLayer, Marker } from "react-leaflet-marker";
 import DirectionsCarIcon from '@mui/icons-material/DirectionsCar';
 import { useEffect } from 'react';
 import { DEFAULT_MAP_ZOOM } from '../constants';
-import { Position } from '../types';
+import { Position } from '@/types';
 import { LatLngLiteral } from 'leaflet';
 
 interface IMarkers {

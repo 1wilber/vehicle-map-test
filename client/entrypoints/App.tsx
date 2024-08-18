@@ -1,8 +1,9 @@
 import { createBrowserRouter, Navigate, Outlet, RouteObject, RouterProvider } from "react-router-dom"
-import { VehicleListView } from "../views/vehicles"
 import relativeTime from "dayjs/plugin/relativeTime";
 import dayjs from 'dayjs'
 import 'dayjs/locale/es'
+import { VehiclesView } from "@/views/vehicles";
+
 dayjs.extend(relativeTime)
 dayjs.locale('es')
 
@@ -26,7 +27,7 @@ const routes: RouteObject[] = [
       },
       {
         path: '/vehicles',
-        element: <VehicleListView />,
+        element: <VehiclesView />,
         loader: VehicleListLoader,
       },
     ]
