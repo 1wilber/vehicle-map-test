@@ -1,12 +1,12 @@
 import { useContext } from "react"
-import { VehicleListContext, VehicleListDispatchContext } from "../providers"
+import { useNotification, VehicleListContext, VehicleListDispatchContext } from "@/providers"
 import { Position, Vehicle } from "@/types"
 import { Markers } from "./markers"
 
 export const VehicleMarkers = () => {
-
   const { vehicles, selected: selectedVehicle } = useContext(VehicleListContext)
   const dispatch = useContext(VehicleListDispatchContext)
+  const notification = useNotification()
 
   const getVehiclePosition = (vehicle: Vehicle): Position => {
     return {
@@ -20,6 +20,11 @@ export const VehicleMarkers = () => {
       type: "select",
       id: null
     })
+
+    notification(
+      "warning",
+      "No se ha encontrado informacion del vehiculo"
+    )
   }
 
   const getVehiclePositions = (vehicles: Vehicle[]): Position[] => {

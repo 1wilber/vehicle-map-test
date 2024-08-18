@@ -3,6 +3,9 @@ import relativeTime from "dayjs/plugin/relativeTime";
 import dayjs from 'dayjs'
 import 'dayjs/locale/es'
 import { VehiclesView } from "@/views/vehicles";
+import { createContext, PropsWithChildren, useContext, useReducer, useState } from "react";
+import { Alert, AlertColor, AlertProps, Snackbar } from "@mui/material";
+import { NotificationProvider } from "@/providers";
 
 dayjs.extend(relativeTime)
 dayjs.locale('es')
@@ -36,8 +39,14 @@ const routes: RouteObject[] = [
 
 const router = createBrowserRouter(routes)
 
+
+
 export const App = () => {
-  return <RouterProvider router={router} />
+  return (
+    <NotificationProvider>
+      <RouterProvider router={router} />
+    </NotificationProvider>
+  )
 }
 
 export default App

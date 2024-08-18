@@ -4,8 +4,8 @@ import { useContext } from "react"
 import { VehicleListContext } from "@/providers"
 
 export const VehicleList: React.FC = () => {
-  const total = 1
   const { vehicles } = useContext(VehicleListContext)
+  const total = vehicles.length
 
 
   return (

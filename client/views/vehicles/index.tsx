@@ -16,7 +16,6 @@ export const VehiclesView = () => {
   const [open, setOpen] = useState<boolean>(false)
   const [drawerOpen, setDrawerOpen] = useState<boolean>(false)
 
-
   return (
     <VehicleListProvider values={{ vehicles }}>
       <Box display='flex'>
