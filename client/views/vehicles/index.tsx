@@ -1,9 +1,9 @@
-import { VehicleList, VehicleMarkers } from "@/components";
+import { VehicleInputSearch, VehicleList, VehicleMarkers } from "@/components";
 import { DEFAULT_MAP_CENTER, DEFAULT_MAP_ZOOM } from "@/constants";
 import { VehicleListProvider } from "@/providers";
-import { Vehicle, VehicleListApiResponse } from "@/types";
-import { MenuOutlined, Search } from "@mui/icons-material";
-import { Alert, AppBar, Autocomplete, Box, Divider, Drawer, IconButton, InputAdornment, Snackbar, TextField, Toolbar, Typography, useMediaQuery, useTheme } from "@mui/material";
+import { VehicleListApiResponse } from "@/types";
+import { MenuOutlined } from "@mui/icons-material";
+import { Alert, AppBar, Box, Divider, Drawer, IconButton, Snackbar, Toolbar, Typography, useMediaQuery, useTheme } from "@mui/material";
 import { useState } from "react";
 import { MapContainer, TileLayer } from "react-leaflet";
 import { useLoaderData } from "react-router-dom";
@@ -13,22 +13,9 @@ export const VehiclesView = () => {
   const isMobile = useMediaQuery(theme.breakpoints.down('sm'))
   const drawerWidth = 320
   const { vehicles, meta } = useLoaderData() as VehicleListApiResponse
-  const [options, setOptions] = useState([])
   const [open, setOpen] = useState<boolean>(false)
   const [drawerOpen, setDrawerOpen] = useState<boolean>(false)
 
-  const searchVehicle = async (name: string) => {
-    const searchParams = new URLSearchParams([
-      ['q', name]
-    ])
-
-    try {
-      const response = await fetch(`/api/v1/vehicles?${searchParams}`)
-      const { vehicles = [] } = await response.json()
-      setOptions(vehicles)
-    } catch (error) { }
-
-  }
 
   return (
     <VehicleListProvider values={{ vehicles }}>
@@ -46,33 +33,11 @@ export const VehiclesView = () => {
               '& .MuiDrawer-paper': { boxSizing: 'border-box', width: drawerWidth, py: 1, px: 2 },
             }}
           >
-            <Autocomplete
-              options={options}
-              getOptionLabel={(option: Vehicle) => option.patent}
-              getOptionKey={(option: Vehicle) => option.id}
-              renderInput={(params) => (
-                <TextField
-                  {...params}
-                  size="small"
-                  variant="outlined"
-                  placeholder="Buscar vehículos... "
-                  onChange={(evt) => searchVehicle(evt.target.value)}
-
-                  InputProps={{
-                    ...params.InputProps,
-                    startAdornment: (
-                      <InputAdornment position="start"><Search /></InputAdornment>
-                    )
-                  }}
-                />
-              )}
-            >
-            </Autocomplete>
+            <VehicleInputSearch />
             <Divider />
             <VehicleList />
           </Drawer>
         </Box>
-
 
         <Box sx={{ flexGrow: 1, width: { sm: `calc(100% - ${drawerWidth}px)` }, height: "100vh" }}>
           <Snackbar
@@ -118,6 +83,6 @@ export const VehiclesView = () => {
           </MapContainer>
         </Box>
       </Box>
-    </VehicleListProvider>
+    </VehicleListProvider >
   )
 }
