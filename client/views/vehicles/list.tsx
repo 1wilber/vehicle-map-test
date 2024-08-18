@@ -7,6 +7,7 @@ import { useState } from "react";
 import { MapContainer, TileLayer } from "react-leaflet";
 import { DEFAULT_MAP_CENTER, DEFAULT_MAP_ZOOM } from "../../constants";
 import { Markers } from "../../components/markers";
+import dayjs from 'dayjs'
 
 
 export const VehicleListView = () => {
@@ -70,6 +71,14 @@ export const VehicleListView = () => {
     setOpen(true)
   }
 
+  const humanizeTime = (date: string) => {
+    if (date) {
+      return dayjs().to(date)
+    } else {
+      return "-"
+    }
+  }
+
   return (
     <Box display='flex'>
       <Box
@@ -87,7 +96,7 @@ export const VehicleListView = () => {
             options={options}
             getOptionLabel={(option: Vehicle) => option.patent}
             getOptionKey={(option: Vehicle) => option.id}
-            onChange={(_, option) => option ? navigate(`/vehicles/${option.id}`) : navigate('/vehicles')}
+            onChange={(_, option) => option ? setSelectedVehicle(option) : setSelectedVehicle(initialSelectedVehicle)}
             renderInput={(params) => (
               <TextField
                 {...params}
@@ -110,7 +119,7 @@ export const VehicleListView = () => {
           <List
             subheader={
               <ListSubheader component="div" disableSticky>
-                Vehículos ({meta.total})
+                Vehículos ({meta?.total})
               </ListSubheader>
             }
           >
@@ -125,7 +134,7 @@ export const VehicleListView = () => {
                   <ListItemText primary={vehicle.patent} secondary={
                     <>
                       <Chip variant="outlined" color="success" label="En ruta" size="small" />
-                      <Typography fontSize="0.8rem">Actualizado hace 20 minutos</Typography>
+                      <Typography fontSize="0.8rem">{humanizeTime(vehicle?.recent_location?.sent_at)}</Typography>
                     </>
                   }
                   />
