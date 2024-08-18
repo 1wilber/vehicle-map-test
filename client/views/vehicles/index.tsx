@@ -12,7 +12,7 @@ export const VehiclesView = () => {
   const theme = useTheme()
   const isMobile = useMediaQuery(theme.breakpoints.down('sm'))
   const drawerWidth = 320
-  const { vehicles, meta } = useLoaderData() as VehicleListApiResponse
+  const { vehicles } = useLoaderData() as VehicleListApiResponse
   const [open, setOpen] = useState<boolean>(false)
   const [drawerOpen, setDrawerOpen] = useState<boolean>(false)
 

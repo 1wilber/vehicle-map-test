@@ -28,8 +28,7 @@ export type Vehicle = {
 }
 
 export type VehicleListApiResponse = {
-  vehicles: Vehicle[],
-  meta: MetaApiResponse
+  vehicles: Vehicle[]
 }
 
 export type VehicleShowApiResponse = {

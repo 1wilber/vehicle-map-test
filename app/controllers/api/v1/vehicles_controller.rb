@@ -11,9 +11,6 @@ class Api::V1::VehiclesController < ApplicationController
     serialization = ActiveModelSerializers::SerializableResource.new(@vehicles)   
 
     render json: {
-      meta: {
-        total: Vehicle.count
-      },
       vehicles: serialization
     }
   end
